@@ -4,10 +4,16 @@
 
     --clr-neutral: hsl(0, 6%, 24%);
 
-    --gradient-1: linear-gradient(135deg, hsl(0, 0%, 100%), hsl(0, 100%, 98%));
-    --gradient-2: linear-gradient(135deg, hsl(0, 80%, 86%), hsl(0, 74%, 74%));
+    --clr-gradient-component: hsl(0, 80%, 86%);
 
-    --fs-default: 16px;
+    --gradient-1: linear-gradient(135deg, hsl(0, 0%, 77%), hsl(0, 70%, 84%));
+    --gradient-2: linear-gradient(135deg, var(--clr-gradient-component), hsl(0, 74%, 74%));
+
+    --white: white;
+
+    --fs-default: 18px;
+    --fs-medium: 48px;
+    --fs-large: 64px;
 
     --font-default: 'Josefin Sans', sans-serif;
 
@@ -27,11 +33,12 @@
 body {
     display: grid;
     font-family: var(--font-default);
+    color: var(--clr-neutral);
+    font-size: var(--fs-default);
     min-height: 100vh;
     min-height: 100dvh;
-    min-height: red;
     grid-template-rows: auto auto 1fr;
-    grid-template-areas: 
+    grid-template-areas:
         "header"
         "picture"
         "main";
@@ -40,30 +47,168 @@ body {
 @media (min-width: 50em) {
     body {
         grid-template-rows: auto 1fr;
-        grid-template-areas: 
-        "header picture"
-        "main picture";
+        grid-template-areas:
+            "header picture"
+            "main picture";
     }
 }
 
+.flow>*:not(:last-child) {
+    margin-bottom: var(--flow-spacer, 2rem);
+}
+
 .p-block {
-    padding: 2rem clamp(1rem, 10vw, 5rem);
+    padding-left: clamp(1rem, 10vw, 10rem);
+    padding-right: clamp(1rem, 10vw, 10rem);
 }
 
 header {
+    --v-spacing: clamp(.75rem, 8vmin, 5rem);
     grid-area: header;
+    padding-top: var(--v-spacing);
+    padding-bottom: var(--v-spacing);
 }
 
 main {
     grid-area: main;
+    margin: 5rem 0;
+    text-align: center;
+    width: fit-content;
+}
+
+@media (min-width: 50em) {
+    main {
+        text-align: start;
+    }
 }
 
 picture {
     grid-area: picture;
+    overflow: hidden;
+    display: flex;
 }
 
 picture img {
-    min-width: 100%;
-    min-height: 100%;
+    max-height: 100vh;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
     object-fit: cover;
+}
+
+.title {
+    width: min-content;
+    letter-spacing: .5ch;
+    color: var(--clr-primary-desaturated);
+    font-weight: var(--fw-300);
+    font-size: var(--fs-medium);
+    line-height: 1.2;
+    margin-inline: auto;
+}
+
+@media (min-width: 50em) {
+    .title {
+        margin-inline: 0;
+        font-size: var(--fs-large)
+    }
+}
+
+.title span {
+    color: var(--clr-neutral);
+    font-weight: var(--fw-600);
+}
+
+.paragraph {
+    color: var(--clr-primary-desaturated);
+    max-width: 44ch;
+    line-height: 1.7;
+}
+
+form {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: 1fr auto;
+    gap: 1ch;
+
+    --border-width: 3px;
+    --front-layer: 1;
+}
+
+form::before {
+    content: '';
+    grid-row: 1/2;
+    grid-column: 1/-1;
+    background: var(--gradient-1);
+    border-radius: 100vh;
+}
+
+form[class=error]::before { background: var(--clr-primary-soft); }
+
+form::after {
+    content: '';
+    grid-row: 1/2;
+    grid-column: 1/-1;
+    border-radius: 100vh;
+    margin: var(--border-width);
+    background-color: var(--white);
+}
+
+input {
+    border: 0;
+    background: 0;
+    grid-row: 1/2;
+    grid-column: 1/2;
+    width: 100%;
+    border-radius: 100vh;
+    padding: 1rem 0 1rem 1rem;
+    z-index: var(--front-layer);
+    font-size: var(--fs-default);
+    color: var(--clr-neutral);
+}
+
+input:focus { outline: transparent; }
+
+input::placeholder {
+    color: var(--clr-primary-desaturated);
+    font-size: var(--fs-default);
+    font-weight: var(--fw-400);
+}
+
+button {
+    padding: 1.25rem 3rem;
+    border-radius: 100vw;
+    border: 0;
+    grid-row: 1/2;
+    grid-column: 3/4;
+    background: var(--gradient-2);
+    z-index: var(--front-layer);
+    box-shadow: .25rem .5rem 1rem hsl(0, 0%, 0%, 0.35);
+}
+
+button:hover { background: var(--clr-gradient-component); }
+
+.error-message {
+    grid-row: 2/3;
+    text-align: start;
+    display: none;
+    padding: 0 1rem;
+    color: var(--clr-primary-soft);
+}
+
+form[class=error] .error-message {
+    display: block;
+}
+
+.error-icon {
+    grid-column: 2/3;
+    grid-row: 1/2;
+    z-index: 24;
+    display: none;
+    align-items: center;
+    flex: 1;
+}
+
+form[class=error] .error-icon {
+    display: flex;
 }
